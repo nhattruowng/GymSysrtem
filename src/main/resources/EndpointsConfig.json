@@ -1,0 +1,24 @@
+{
+  "PublicEndpoints": [
+    "/",
+    "/oauth2/**",
+    "/swagger-ui/**",
+    "/v3/api-docs/**",
+    "/swagger-resources/**",
+    "/api/v1/test/test"
+  ],
+  "PUBLIC_ENDPOINTS_METHOD": [
+    "/swagger-ui/**",
+    "/v3/api-docs/**",
+    "/swagger-resources/**"
+  ],
+  "PUBLIC_ENDPOINTS_ADMIN": [
+    ""
+  ],
+  "PUBLIC_ENDPOINTS_AUTHOR": [
+    ""
+  ],
+  "PUBLIC_ENDPOINTS_ALL_ROLES": [
+    ""
+  ]
+}
