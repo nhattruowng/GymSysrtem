@@ -1,10 +1,8 @@
 package com.server.gymServerApplication.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.server.gymServerApplication.infor.Gender;
-import com.server.gymServerApplication.infor.Role;
+import com.server.gymServerApplication.entity.baseObj.BaseObject;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,11 +10,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 
 @EqualsAndHashCode(callSuper = true)
@@ -27,7 +20,6 @@ import java.util.Date;
 @SuperBuilder
 @Table(indexes = {@Index(name = "idx_email", columnList = "email"),
         @Index(name = "idx_phone", columnList = "phone")})
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class User extends BaseObject {
 
     private String name;
@@ -46,47 +38,48 @@ public class User extends BaseObject {
     @Email(message = "Email should be valid")
     private String email;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    @Temporal(TemporalType.DATE)
-    private Date birthDate;
-
-
-    private boolean isEnable;
-
-
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] avata;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+//    @Temporal(TemporalType.DATE)
+//    private Date birthDate;
+//
+//
+//    private boolean isEnable;
+//
+//
 
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-
-    private String uid;
-
-    @Column(length = 150)
-    @Size(max = 150, message = "Describe cannot exceed 150 characters")
-    private String description;
-
-    private String address;
-
-    @Size(max = 20, min = 4, message = "tag name k hop le !")
-    private String tagName;
-
-
-    /**
-     * set mật định ngay sinh là 01/01/2000
-     */
-    public void init() {
-        if (this.birthDate == null) {
-            try {
-                this.birthDate = new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2000");
-            } catch (ParseException e) {
-                throw new RuntimeException("Error parsing default date", e);
-            }
-        }
-    }
+//
+//    @Enumerated(EnumType.STRING)
+//    private Role role;
+//
+//    @Enumerated(EnumType.STRING)
+//    private Gender gender;
+//
+//
+//    private String uid;
+//
+//    @Column(length = 150)
+//    @Size(max = 150, message = "Describe cannot exceed 150 characters")
+//    private String description;
+//
+//
+//    @Size(max = 20, min = 4, message = "tag name k hop le !")
+//    private String tagName;
+//
+//
+//    /**
+//     * set mật định ngay sinh là 01/01/2000
+//     */
+//    public void init() {
+//        if (this.birthDate == null) {
+//            try {
+//                this.birthDate = new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2000");
+//            } catch (ParseException e) {
+//                throw new RuntimeException("Error parsing default date", e);
+//            }
+//        }
+//    }
 }
