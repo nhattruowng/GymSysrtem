@@ -1,11 +1,10 @@
 {
   "PublicEndpoints": [
     "/",
-    "/oauth2/**",
     "/swagger-ui/**",
     "/v3/api-docs/**",
     "/swagger-resources/**",
-    "/api/v1/test/test"
+    "/api/v1/test/**"
   ],
   "PUBLIC_ENDPOINTS_METHOD": [
     "/swagger-ui/**",
