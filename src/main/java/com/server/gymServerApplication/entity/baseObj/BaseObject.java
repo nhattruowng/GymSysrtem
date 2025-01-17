@@ -1,4 +1,4 @@
-package com.server.gymServerApplication.entity;
+package com.server.gymServerApplication.entity.baseObj;
 
 import jakarta.persistence.*;
 import lombok.*;
