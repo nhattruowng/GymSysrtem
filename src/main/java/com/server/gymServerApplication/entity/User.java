@@ -11,6 +11,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -41,6 +43,9 @@ public class User extends BaseObject {
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] avata;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Bill> bills;
 
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 //    @Temporal(TemporalType.DATE)
