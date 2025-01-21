@@ -5,6 +5,7 @@ import com.server.gymServerApplication.entity.baseObj.BaseObject;
 import com.server.gymServerApplication.entity.listener.UserInformationListener;
 import com.server.gymServerApplication.infor.BMI;
 import com.server.gymServerApplication.infor.Gender;
+import com.server.gymServerApplication.infor.WHR;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -52,6 +53,7 @@ public class UserInformation extends BaseObject {
     @Enumerated(EnumType.STRING)
     private BMI bmi;
 
-
+    @Enumerated(EnumType.STRING)
+    private WHR whr;
 
 }

@@ -14,12 +14,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-@Table(indexes = {@Index(name = "idx_email", columnList = "email"),
-        @Index(name = "idx_phone", columnList = "phone")})
+//@Table(indexes = {@Index(name = "idx_email", columnList = "email"),
+//        @Index(name = "idx_phone", columnList = "phone")})
 public class Payment extends BaseObject {
 
-
-    private User user;
     @OneToOne
     @JoinColumn(name = "bill_id", nullable = false)
     private Bill bill;

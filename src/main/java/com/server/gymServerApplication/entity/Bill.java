@@ -15,19 +15,18 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-    @Table(indexes = {@Index(name = "idx_used", columnList = "user_id"),
-            @Index(name = "idx_payment", columnList = "payment_id")})
+//    @Table(indexes = {@Index(name = "idx_used", columnList = "user_id"),
+//            @Index(name = "idx_payment", columnList = "payment_id")})
 public class Bill extends BaseObject {
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+//    @ManyToOne
+//    @JoinColumn(name = "user_id", nullable = false)
+//    private User user;
 
     private float total_amount = 0;
 
 
     @OneToOne
-    @JoinColumn(name = "payment_id", nullable = false, unique = true )
     private Payment payment;
 
 
