@@ -19,13 +19,13 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 @Table(indexes = {@Index(name = "idx_email", columnList = "email"),
-        @Index(name = "idx_phone", columnList = "phone")})
+        @Index(name = "idx_phone", columnList = "phone"),
+        @Index(name = "idx_faceId", columnList = "faceId")})
 public class User extends BaseObject {
 
     private String name;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Size(min = 5, message = "Password")
     private String password;
 
     @Column(unique = true)
@@ -41,6 +41,11 @@ public class User extends BaseObject {
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] avata;
+
+    private String faceId;
+//
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Bill> bills;
 
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 //    @Temporal(TemporalType.DATE)
