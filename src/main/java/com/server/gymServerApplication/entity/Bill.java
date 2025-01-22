@@ -19,12 +19,10 @@ import lombok.experimental.SuperBuilder;
 //            @Index(name = "idx_payment", columnList = "payment_id")})
 public class Bill extends BaseObject {
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
+    @ManyToOne
+    private User user;
 
     private float total_amount = 0;
-
 
     @OneToOne
     private Payment payment;

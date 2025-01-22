@@ -6,6 +6,7 @@ import com.server.gymServerApplication.entity.listener.UserInformationListener;
 import com.server.gymServerApplication.infor.BMI;
 import com.server.gymServerApplication.infor.Gender;
 import com.server.gymServerApplication.infor.WHR;
+import com.server.gymServerApplication.infor.WHtR;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -55,5 +56,8 @@ public class UserInformation extends BaseObject {
 
     @Enumerated(EnumType.STRING)
     private WHR whr;
+
+    @Enumerated(EnumType.STRING)
+    private WHtR wHtR; //Chỉ số vòng eo / chiều cao
 
 }
