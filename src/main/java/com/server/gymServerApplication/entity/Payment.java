@@ -23,8 +23,12 @@ public class Payment extends BaseObject {
     private double amount;
 
     @OneToOne
-    @JoinColumn(name = "bill_id", nullable = false)
+//    @JoinColumn(name = "bill_id", nullable = false, unique = true)
     private Bill bill;
+
+
+
+
 
 
 }
