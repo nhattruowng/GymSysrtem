@@ -25,8 +25,12 @@ public class Bill extends BaseObject {
     private float total_amount = 0;
 
     @OneToOne
+//    @JoinColumn(name = "payment_id", nullable = false, unique = true)
     private Payment payment;
 
+    @OneToOne
+//    @JoinColumn(name = "membership_id", nullable = false, unique = true)
+    private Membership membership;
 
 
 }

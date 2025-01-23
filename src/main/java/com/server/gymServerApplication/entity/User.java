@@ -3,6 +3,7 @@ package com.server.gymServerApplication.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.server.gymServerApplication.entity.baseObj.BaseObject;
+import com.server.gymServerApplication.infor.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -46,47 +47,19 @@ public class User extends BaseObject {
 
     private String faceId;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @OneToOne
+    private UserInformation userInformation;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bill> bills;
 
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-//    @Temporal(TemporalType.DATE)
-//    private Date birthDate;
-//
-//
-//    private boolean isEnable;
-//
-//
+    @OneToOne
+    private Membership membership;
 
-//
-//    @Enumerated(EnumType.STRING)
-//    private Role role;
-//
-//    @Enumerated(EnumType.STRING)
-//    private Gender gender;
-//
-//
-//    private String uid;
-//
-//    @Column(length = 150)
-//    @Size(max = 150, message = "Describe cannot exceed 150 characters")
-//    private String description;
-//
-//
-//    @Size(max = 20, min = 4, message = "tag name k hop le !")
-//    private String tagName;
-//
-//
-//    /**
-//     * set mật định ngay sinh là 01/01/2000
-//     */
-//    public void init() {
-//        if (this.birthDate == null) {
-//            try {
-//                this.birthDate = new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2000");
-//            } catch (ParseException e) {
-//                throw new RuntimeException("Error parsing default date", e);
-//            }
-//        }
-//    }
+    @OneToOne
+    private Calendar calendar;
+
 }
