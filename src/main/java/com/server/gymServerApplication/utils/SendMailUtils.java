@@ -12,7 +12,7 @@ public class SendMailUtils {
                 "\n" +
                 "                <tr>\n" +
                 "                    <td class=\"header\" style=\"background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;\">\n" +
-                "                        Verify NewsExpress code\n" +
+                "                        Verify GymSystem code\n" +
                 "                    </td>\n" +
                 "                </tr>\n" +
                 "\n" +

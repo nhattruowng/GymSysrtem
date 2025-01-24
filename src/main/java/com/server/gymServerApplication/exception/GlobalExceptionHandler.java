@@ -1,5 +1,6 @@
 package com.server.gymServerApplication.exception;
 import com.server.gymServerApplication.modelView.ResponseObject;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -116,6 +117,12 @@ public class GlobalExceptionHandler implements AuthenticationEntryPoint {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ResponseObject> handleRuntimeException(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+               .body(new ResponseObject(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null));
+    }
+
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<ResponseObject> handleMessagingException(MessagingException ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                .body(new ResponseObject(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null));
     }
