@@ -3,6 +3,9 @@ package com.server.gymServerApplication.iservice;
 import com.server.gymServerApplication.modelView.ResponseObject;
 import com.server.gymServerApplication.modelView.repon.UserRepo;
 import com.server.gymServerApplication.modelView.reques.RegisUser;
+import jakarta.mail.MessagingException;
+
+import java.util.concurrent.CompletableFuture;
 
 public interface IAuthentication {
 
@@ -10,6 +13,6 @@ public interface IAuthentication {
 
     UserRepo FaceLogin();
 
-    Comparable<ResponseObject> Signup(RegisUser user);
+    CompletableFuture<ResponseObject> Signup(RegisUser user) throws MessagingException;
 
 }
