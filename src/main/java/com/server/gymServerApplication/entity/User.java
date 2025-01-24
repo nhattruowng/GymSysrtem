@@ -3,6 +3,7 @@ package com.server.gymServerApplication.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.server.gymServerApplication.entity.baseObj.BaseObject;
+import com.server.gymServerApplication.entity.listener.UserListener;
 import com.server.gymServerApplication.infor.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -24,6 +25,7 @@ import java.util.List;
 @Table(indexes = {@Index(name = "idx_email", columnList = "email"),
         @Index(name = "idx_phone", columnList = "phone"),
         @Index(name = "idx_faceId", columnList = "faceId")})
+@EntityListeners(UserListener.class)
 public class User extends BaseObject {
 
     private String name;

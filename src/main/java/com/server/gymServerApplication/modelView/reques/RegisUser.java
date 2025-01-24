@@ -1,4 +1,6 @@
 package com.server.gymServerApplication.modelView.reques;
 
-public record RegisUser(String email, String password) {
+import jakarta.validation.constraints.NotNull;
+
+public record RegisUser(@NotNull String email,@NotNull String password) {
 }
