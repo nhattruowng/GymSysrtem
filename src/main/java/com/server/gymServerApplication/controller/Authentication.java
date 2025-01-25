@@ -3,13 +3,9 @@ package com.server.gymServerApplication.controller;
 import com.server.gymServerApplication.iservice.IAuthentication;
 import com.server.gymServerApplication.modelView.ResponseObject;
 import com.server.gymServerApplication.modelView.reques.RegisUser;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -24,9 +20,14 @@ public class Authentication {
         this.authentication = authentication;
     }
 
-    @PostMapping("signup-newaccount")
+    @PostMapping("signup-new-account")
     private CompletableFuture<ResponseObject> sinup(@RequestBody RegisUser regisUser) throws MessagingException {
         return authentication.Signup(regisUser);
+    }
+
+    @PostMapping("signup-new-account/verifi/{code}")
+    private CompletableFuture<ResponseObject> sinVerified(@PathVariable String code) throws MessagingException {
+        return authentication.verify(code);
     }
 
 
