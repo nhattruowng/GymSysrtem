@@ -15,4 +15,6 @@ public interface IAuthentication {
 
     CompletableFuture<ResponseObject> Signup(RegisUser user) throws MessagingException;
 
+    CompletableFuture<ResponseObject> verify(String code);
+
 }

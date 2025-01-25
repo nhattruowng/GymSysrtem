@@ -2,10 +2,12 @@ package com.server.gymServerApplication;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import java.io.IOException;
 
 @SpringBootApplication
+@EnableCaching
 @EnableJpaRepositories(basePackages = {"com.server.gymServerApplication.repository"})
 //@EntityScan(basePackages = {"com.server.gymServerApplication.entity"})
 public class GymServerApplication {

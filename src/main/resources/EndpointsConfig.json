@@ -6,7 +6,8 @@
     "/swagger-resources/**",
     "/api/v1/test/**",
     "/api/v1/test/send-email-test",
-    "/api/v1/application-authent/signup-newaccount"
+    "/api/v1/application-authent/signup-new-account",
+    "/api/v1/application-authent/signup-new-account/verifi/**"
   ],
   "PUBLIC_ENDPOINTS_METHOD": [
     "/swagger-ui/**",
