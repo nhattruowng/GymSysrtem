@@ -22,8 +22,8 @@ public class EndpointsConfig {
     @JsonProperty("PUBLIC_ENDPOINTS_ADMIN")
     private List<String> PUBLIC_ENDPOINTS_ADMIN;
 
-    @JsonProperty("PUBLIC_ENDPOINTS_AUTHOR")
-    private List<String> PUBLIC_ENDPOINTS_AUTHOR;
+    @JsonProperty("PUBLIC_ENDPOINTS_PT")
+    private List<String> PUBLIC_ENDPOINTS_PT;
 
     @JsonProperty("PUBLIC_ENDPOINTS_ALL_ROLES")
     private List<String> PUBLIC_ENDPOINTS_ALL_ROLES;
@@ -56,10 +56,10 @@ public class EndpointsConfig {
         return new String[0];
     }
 
-    public static String[] getPublicEndpointsAuthor() {
+    public static String[] getPublicEndpointsPT() {
         EndpointsConfig config = loadConfig();
-        if (config != null && config.PUBLIC_ENDPOINTS_AUTHOR != null) {
-            return config.PUBLIC_ENDPOINTS_AUTHOR.toArray(new String[0]);
+        if (config != null && config.PUBLIC_ENDPOINTS_PT != null) {
+            return config.PUBLIC_ENDPOINTS_PT.toArray(new String[0]);
         }
         return new String[0];
     }
