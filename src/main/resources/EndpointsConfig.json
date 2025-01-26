@@ -7,7 +7,8 @@
     "/api/v1/test/**",
     "/api/v1/test/send-email-test",
     "/api/v1/application-authent/signup-new-account",
-    "/api/v1/application-authent/signup-new-account/verifi/**"
+    "/api/v1/application-authent/signup-new-account/verified/**",
+    "/api/v1/application-authent/login-account"
   ],
   "PUBLIC_ENDPOINTS_METHOD": [
     "/swagger-ui/**",
@@ -15,12 +16,12 @@
     "/swagger-resources/**"
   ],
   "PUBLIC_ENDPOINTS_ADMIN": [
-    ""
+    "/api/v1/oauth-admin/test"
   ],
-  "PUBLIC_ENDPOINTS_AUTHOR": [
-    ""
+  "PUBLIC_ENDPOINTS_PT": [
+    "/api/v1/oauth-pt/test"
   ],
   "PUBLIC_ENDPOINTS_ALL_ROLES": [
-    ""
+    "/api/v1/oauth-user/test"
   ]
 }

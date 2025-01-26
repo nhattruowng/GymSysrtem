@@ -2,6 +2,7 @@ package com.server.gymServerApplication.iservice;
 
 import com.server.gymServerApplication.modelView.ResponseObject;
 import com.server.gymServerApplication.modelView.repon.UserRepo;
+import com.server.gymServerApplication.modelView.reques.LoginReques;
 import com.server.gymServerApplication.modelView.reques.RegisUser;
 import jakarta.mail.MessagingException;
 
@@ -16,5 +17,8 @@ public interface IAuthentication {
     CompletableFuture<ResponseObject> Signup(RegisUser user) throws MessagingException;
 
     CompletableFuture<ResponseObject> verify(String code);
+
+
+    CompletableFuture<ResponseObject> login(LoginReques loginReques);
 
 }
