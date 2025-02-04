@@ -5,6 +5,7 @@ import com.server.gymServerApplication.entity.User;
 import com.server.gymServerApplication.repository.IUserrepository;
 import com.server.gymServerApplication.utils.OtherFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,6 +23,7 @@ public class UserService implements UserDetailsService {
 
 
     @Override
+    @Cacheable(value = "users", key = "#username")
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = new User();
         if (OtherFunctions.isValidEmail(username)) {
