@@ -47,7 +47,7 @@ public class User extends BaseObject {
     @Column(columnDefinition = "LONGBLOB")
     private byte[] avata;
 
-    private String faceId;
+    private byte[] faceId;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -55,13 +55,13 @@ public class User extends BaseObject {
     @OneToOne
     private UserInformation userInformation;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Bill> bills;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Membership membership;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Calendar calendar;
 
 }

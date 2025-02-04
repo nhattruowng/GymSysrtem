@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 public class OtherFunctions {
 
@@ -145,6 +146,27 @@ public class OtherFunctions {
             return input.substring(0, maxLength) + "...";
         }
         return input.substring(0, lastSpaceIndex) + "...";
+    }
+
+    /**
+     * ktr email
+     * @param email
+     * @return
+     */
+    public static boolean isValidEmail(String email) {
+        String regex = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
+        return Pattern.matches(regex, email);
+    }
+
+    /**
+     * ktr sdt
+     * @param phoneNumber
+     * @return
+     */
+    public static boolean isValidPhoneNumber(String phoneNumber) {
+        // Regex kiểm tra số điện thoại (10-11 chữ số)
+        String regex = "^[0-9]{10,11}$";
+        return Pattern.matches(regex, phoneNumber);
     }
 
 }
