@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -125,6 +126,12 @@ public class GlobalExceptionHandler implements AuthenticationEntryPoint {
     public ResponseEntity<ResponseObject> handleMessagingException(MessagingException ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                .body(new ResponseObject(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ResponseObject> handleBadCredentialsException(BadCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+               .body(new ResponseObject(ex.getMessage(), HttpStatus.UNAUTHORIZED, null));
     }
 
     @Override

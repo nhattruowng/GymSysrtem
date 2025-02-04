@@ -5,6 +5,7 @@ import com.server.gymServerApplication.entity.User;
 import com.server.gymServerApplication.iservice.IAuthentication;
 import com.server.gymServerApplication.iservice.IEmailService;
 import com.server.gymServerApplication.modelView.ResponseObject;
+import com.server.gymServerApplication.modelView.map.ObjMap;
 import com.server.gymServerApplication.modelView.repon.LoginRepose;
 import com.server.gymServerApplication.modelView.repon.UserRepo;
 import com.server.gymServerApplication.modelView.reques.LoginReques;
@@ -20,6 +21,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,26 +98,33 @@ public class AuthenticationService implements IAuthentication {
         if (code.equals(verifiCode)) {
             iUserrepository.save(user);
             resulResponseObject = new ResponseObject("DANG KI THANH CONG", HttpStatus.OK, true);
+        } else {
+            resulResponseObject = new ResponseObject("DANG KI THAT BAI!", HttpStatus.OK, false);
         }
-        resulResponseObject = new ResponseObject("DANG KI THANH CONG", HttpStatus.OK, false);
         return CompletableFuture.completedFuture(resulResponseObject);
     }
 
     @Async
     @Override
     public CompletableFuture<ResponseObject> login(LoginReques loginReques) {
+        System.err.println(loginReques.keyLogin());
+        System.err.println(loginReques.password());
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginReques.keyLogin(), loginReques.password())
             );
-            AccountDetails userDetails = (AccountDetails) authentication.getPrincipal();
 
-            LoginRepose loginRepose = LoginRepose.builder()
-                    .phone(userDetails.getUser().getPhone())
-                    .email(userDetails.getUsername())
-                    .username(userDetails.getUser().getName())
-                    .token(tokenService.generateToken(userDetails.getUser()))
-                    .build();
+            AccountDetails userDetails = (AccountDetails) authentication.getPrincipal();
+            LoginRepose loginRepose = ObjMap.INSTANCE.loginRepose(userDetails.getUser());
+
+//            LoginRepose loginRepose = LoginRepose.builder()
+//                    .phone(userDetails.getUser().getPhone())
+//                    .avata(userDetails.getUser().getAvata())
+//                    .token(tokenService.generateToken(userDetails.getUser()))
+//                    .name(userDetails.getUser().getName())
+//                    .email(userDetails.getUser().getEmail())
+//                    .build();
+
 
             return CompletableFuture.completedFuture(ResponseObject.builder()
                     .httpStatus(HttpStatus.OK)
@@ -124,11 +134,15 @@ public class AuthenticationService implements IAuthentication {
         } catch (Exception e) {
             return CompletableFuture.completedFuture(ResponseObject.builder()
                     .httpStatus(HttpStatus.UNAUTHORIZED)
-                    .message("Login failed: ")
+                    .message(e.getMessage())
                     .build());
         }
-    }
 
+//        return CompletableFuture.completedFuture(ResponseObject.builder()
+//                .httpStatus(HttpStatus.OK)
+//                .message("OK")
+//                .build());
+    }
 
 
 }

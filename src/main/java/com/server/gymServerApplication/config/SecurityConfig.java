@@ -8,12 +8,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -71,29 +76,32 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(new CustomRequestMatcher(PUBLIC_ENDPOINTS_METHOD)).permitAll()
-                        .requestMatchers(PUBLIC_ENDPOINTS_ALL_ROLES).hasAnyRole("ADMIN","PT","USER","STAFF")
+                        .requestMatchers(PUBLIC_ENDPOINTS_ALL_ROLES).hasAnyRole("ADMIN", "PT", "USER", "STAFF")
                         .requestMatchers(PUBLIC_ENDPOINTS_ADMIN).hasRole("ADMIN")
                         .requestMatchers(PUBLIC_ENDPOINTS_PT).hasRole("PT")
                         .anyRequest()
                         .authenticated()
                 ).oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                         .authenticationEntryPoint(globalExceptionHandler).accessDeniedHandler((request, response, accessDeniedException) -> {
                             globalExceptionHandler.handleAccessDeniedException(request, response);
                         }))
+                .userDetailsService(userService)
 
                 .csrf(AbstractHttpConfigurer::disable);
-        httpSecurity.addFilterBefore(new JwtAuthenticationFilter(jwtDecoder(),tokenService, userService),
+        httpSecurity.addFilterBefore(new JwtAuthenticationFilter(jwtDecoder(), tokenService, userService),
                 UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
 
+
     @Bean
-    JwtDecoder jwtDecoder() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(SECRET.getBytes(), "HS512");
+    public JwtDecoder jwtDecoder() {
+        SecretKeySpec secretKeySpec = new SecretKeySpec(SECRET.getBytes(), "HmacSHA512");
         return NimbusJwtDecoder.withSecretKey(secretKeySpec).macAlgorithm(MacAlgorithm.HS512).build();
     }
+
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
@@ -115,8 +123,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration)
+    public AuthenticationManager authenticationManagerBean(HttpSecurity httpSecurity)
             throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+        return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
+                .authenticationProvider(authenticationProvider()).build();
     }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
+    }
+
 }

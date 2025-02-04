@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/v1/oauth-user/")
-@PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('PT') or hasRole('STAFF')")
+@PreAuthorize("hasRole('USER')")
 public class UserController {
     @GetMapping("test")
     public String getUserName() {

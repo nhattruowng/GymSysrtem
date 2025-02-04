@@ -40,11 +40,18 @@ public class TokenService {
     String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
+//        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+//                .subject(user.getEmail())
+//                .issueTime(new Date(System.currentTimeMillis()))
+//                .expirationTime(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
+//                .claim("roles", List.of("ROLE_" + user.getRole().toString())) // Thêm tiền tố "ROLE_" vào quyền// Sử dụng role đã được xử lý
+//                .build();
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(user.getEmail())
                 .issueTime(new Date(System.currentTimeMillis()))
-//                .expirationTime(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
-                .claim("roles", List.of("ROLE_" + user.getRole())) // Thêm tiền tố "ROLE_" vào quyền// Sử dụng role đã được xử lý
+                .expirationTime(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
+                .claim("phone", user.getPhone())
+                .claim("roles", List.of("ROLE_" + user.getRole().toString()))
                 .build();
 
 
@@ -83,8 +90,6 @@ public class TokenService {
         }
         throw new RuntimeException("Token verification failed");
     }
-
-
 
 
 }

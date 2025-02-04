@@ -27,9 +27,12 @@ public class UserService implements UserDetailsService {
         if (OtherFunctions.isValidEmail(username)) {
             user = iUserrepository.findByEmail(username)
                     .orElseThrow(() -> new UsernameNotFoundException("EMAIL CHUA DUOC DANG KI!"));
+
         } else if (OtherFunctions.isValidPhoneNumber(username)) {
             user = iUserrepository.findByPhone(username)
                     .orElseThrow(() -> new UsernameNotFoundException("SO DIEN THOAI CHUA DUOC DANG KY!"));
+        } else {
+            throw new UsernameNotFoundException("Tai khoan khong ton tai!");
         }
         return new AccountDetails(user);
     }

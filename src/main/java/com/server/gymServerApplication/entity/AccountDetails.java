@@ -26,8 +26,9 @@ public class AccountDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return user.getPhone() + user.getEmail();
     }
+
     @Override
     public boolean isAccountNonExpired() {
         return true; // Hoặc kiểm tra điều kiện nếu cần
