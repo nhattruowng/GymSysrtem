@@ -1,4 +1,4 @@
-package com.server.gymServerApplication.entity;
+package com.server.gymServerApplication.entity.mysql;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.server.gymServerApplication.entity.baseObj.BaseObject;

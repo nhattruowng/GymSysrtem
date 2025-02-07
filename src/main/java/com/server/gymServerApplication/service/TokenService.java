@@ -5,8 +5,8 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.server.gymServerApplication.entity.User;
-import com.server.gymServerApplication.repository.IUserrepository;
+import com.server.gymServerApplication.entity.mysql.User;
+import com.server.gymServerApplication.repository.mysql.IUserrepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -24,6 +24,7 @@ public class TokenService {
     private String SECRET_KEY;
 
     private final IUserrepository iUserrepository;
+
 
 
     @Autowired

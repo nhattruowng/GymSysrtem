@@ -1,16 +1,17 @@
 package com.server.gymServerApplication.service;
 
-import com.server.gymServerApplication.entity.AccountDetails;
-import com.server.gymServerApplication.entity.User;
+import com.server.gymServerApplication.entity.mysql.AccountDetails;
+import com.server.gymServerApplication.entity.mysql.User;
 import com.server.gymServerApplication.iservice.IAuthentication;
 import com.server.gymServerApplication.iservice.IEmailService;
 import com.server.gymServerApplication.modelView.ResponseObject;
-import com.server.gymServerApplication.modelView.map.ObjMap;
+import com.server.gymServerApplication.modelView.repon.ChangeInforAccount;
+import com.server.gymServerApplication.modelView.repon.ChangePassword;
 import com.server.gymServerApplication.modelView.repon.LoginRepose;
 import com.server.gymServerApplication.modelView.repon.UserRepo;
 import com.server.gymServerApplication.modelView.reques.LoginReques;
 import com.server.gymServerApplication.modelView.reques.RegisUser;
-import com.server.gymServerApplication.repository.IUserrepository;
+import com.server.gymServerApplication.repository.mysql.IUserrepository;
 import com.server.gymServerApplication.utils.OtherFunctions;
 import com.server.gymServerApplication.utils.SendMailUtils;
 import jakarta.mail.MessagingException;
@@ -22,11 +23,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.security.auth.login.AccountNotFoundException;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -38,19 +39,24 @@ public class AuthenticationService implements IAuthentication {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
-
+    private Authentication authentication;
     private User user;
 
 
     private String verifiCode;
 
     @Autowired
-    public AuthenticationService(IUserrepository iUserrepository, IEmailService emailService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, TokenService tokenService) {
+    public AuthenticationService(IUserrepository iUserrepository,
+                                 IEmailService emailService,
+                                 PasswordEncoder passwordEncoder,
+                                 AuthenticationManager authenticationManager,
+                                 TokenService tokenService) {
         this.iUserrepository = iUserrepository;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
+        this.authentication = SecurityContextHolder.getContext().getAuthentication();
         this.user = new User();
     }
 
@@ -65,7 +71,7 @@ public class AuthenticationService implements IAuthentication {
         return null;
     }
 
-    @Transactional
+//    @Transactional("primaryTransactionManager")
     @Async
     @Override
     public CompletableFuture<ResponseObject> Signup(RegisUser regisUser) throws MessagingException {
@@ -91,7 +97,7 @@ public class AuthenticationService implements IAuthentication {
         return CompletableFuture.completedFuture(new ResponseObject("NHAP MA XAC NHAN ", HttpStatus.OK, null));
     }
 
-    @Transactional
+//    @Transactional("primaryTransactionManager")
     @Override
     public CompletableFuture<ResponseObject> verify(String code) {
         ResponseObject resulResponseObject = null;
@@ -106,25 +112,26 @@ public class AuthenticationService implements IAuthentication {
 
     @Async
     @Override
+//    @Cacheable(value = "users", key = "#loginReques.keyLogin()")
     public CompletableFuture<ResponseObject> login(LoginReques loginReques) {
-        System.err.println(loginReques.keyLogin());
-        System.err.println(loginReques.password());
+//        System.err.println(loginReques.keyLogin());
+//        System.err.println(loginReques.password());
         try {
-            Authentication authentication = authenticationManager.authenticate(
+            authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginReques.keyLogin(), loginReques.password())
             );
 
             AccountDetails userDetails = (AccountDetails) authentication.getPrincipal();
-            LoginRepose loginRepose = ObjMap.INSTANCE.loginRepose(userDetails.getUser());
+//            LoginRepose loginRepose = ObjMap.INSTANCE.loginRepose(userDetails.getUser());
 
-//            LoginRepose loginRepose = LoginRepose.builder()
-//                    .phone(userDetails.getUser().getPhone())
-//                    .avata(userDetails.getUser().getAvata())
-//                    .token(tokenService.generateToken(userDetails.getUser()))
-//                    .name(userDetails.getUser().getName())
-//                    .email(userDetails.getUser().getEmail())
-//                    .build();
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
+            LoginRepose loginRepose = new LoginRepose(userDetails.getUser().getName()
+                    , userDetails.getUser().getEmail(),
+                    userDetails.getUser().getPhone(),
+                    userDetails.getUser().getAvata(),
+                    tokenService.generateToken(userDetails.getUser())
+            );
 
             return CompletableFuture.completedFuture(ResponseObject.builder()
                     .httpStatus(HttpStatus.OK)
@@ -138,10 +145,78 @@ public class AuthenticationService implements IAuthentication {
                     .build());
         }
 
-//        return CompletableFuture.completedFuture(ResponseObject.builder()
-//                .httpStatus(HttpStatus.OK)
-//                .message("OK")
-//                .build());
+    }
+
+    /*
+
+     */
+    @Override
+    @Async
+    public CompletableFuture<ResponseObject> changePassWork(ChangePassword password) throws AccountNotFoundException {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AccountNotFoundException("BAN CHUA DANG NHAP!");
+        }
+
+        AccountDetails userDetails = (AccountDetails) authentication.getPrincipal();
+
+        if (!userDetails.isAccountNonLocked()) {
+            throw new AccountNotFoundException("TAI KHOAN DA BAN KHOA!");
+        }
+
+        String email = userDetails.getUser().getEmail();
+        String phone = userDetails.getUser().getPhone();
+
+        User user = iUserrepository.findByPhoneOrEmail(email, phone)
+                .filter(user1 -> !user1.isDelete())
+                .orElseThrow(() -> new AccountNotFoundException("TAI KHOAN DA BAN KHOA!"));
+
+        if (!passwordEncoder.matches(password.oldPassword(), user.getPassword())) {
+            throw new AccountNotFoundException("MAT KHAU KHONG DUNG!");
+        }
+
+        if (password.oldPassword().equals(password.newPassword())) {
+            throw new AccountNotFoundException("MAT KHAU MUON THAY DOI KHONG DUOC TRUNG VOI MAT KHAU HIEN TAI!");
+        }
+
+        user.setPassword(passwordEncoder.encode(password.newPassword()));
+
+        iUserrepository.save(user);
+
+        return CompletableFuture.completedFuture(ResponseObject.builder()
+                .data(true)
+                .message("THAY DOI MAT KHAU THANH CONG!")
+                .httpStatus(HttpStatus.OK)
+                .build());
+    }
+
+    @Async
+    @Transactional
+    @Override
+    public CompletableFuture<ResponseObject> changeInfoAccess(ChangeInforAccount changeInforAccount) throws AccountNotFoundException {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AccountNotFoundException("CHUA DANG NHAP!");
+        }
+
+        AccountDetails userDetails = (AccountDetails) authentication.getPrincipal();
+
+        if (!userDetails.isAccountNonLocked()) {
+            throw new AccountNotFoundException("TAI KHOAN DA BAN KHOA!");
+        }
+
+        String email = userDetails.getUser().getEmail();
+        String phone = userDetails.getUser().getPhone();
+
+        User user = iUserrepository.findByPhoneOrEmail(email, phone)
+                .filter(user1 -> !user1.isDelete())
+                .orElseThrow(() -> new AccountNotFoundException("TAI KHOAN DA BAN KHOATAI KHOAN DA BAN KHOA"));
+
+        if (changeInforAccount.Email() != null || changeInforAccount.Phone() != null) {
+
+        }
+
+        return null;
     }
 
 
