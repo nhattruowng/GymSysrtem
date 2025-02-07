@@ -1,6 +1,6 @@
 package com.server.gymServerApplication.entity.listener;
 
-import com.server.gymServerApplication.entity.UserInformation;
+import com.server.gymServerApplication.entity.mysql.UserInformation;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 

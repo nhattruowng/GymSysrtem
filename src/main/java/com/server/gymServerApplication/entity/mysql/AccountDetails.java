@@ -1,4 +1,4 @@
-package com.server.gymServerApplication.entity;
+package com.server.gymServerApplication.entity.mysql;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,7 +36,7 @@ public class AccountDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; // Kiểm tra nếu tài khoản bị khóa
+        return user.isDelete(); // Kiểm tra nếu tài khoản bị khóa
     }
 
     @Override

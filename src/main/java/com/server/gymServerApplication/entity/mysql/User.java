@@ -1,4 +1,4 @@
-package com.server.gymServerApplication.entity;
+package com.server.gymServerApplication.entity.mysql;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,8 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @SuperBuilder
 @Table(indexes = {@Index(name = "idx_email", columnList = "email"),
-        @Index(name = "idx_phone", columnList = "phone"),
-        @Index(name = "idx_faceId", columnList = "faceId")})
+        @Index(name = "idx_phone", columnList = "phone")})
 @EntityListeners(UserListener.class)
 public class User extends BaseObject {
 
@@ -47,7 +46,8 @@ public class User extends BaseObject {
     @Column(columnDefinition = "LONGBLOB")
     private byte[] avata;
 
-    private byte[] faceId;
+//    @Lob
+//    private byte[] faceId;
 
     @Enumerated(EnumType.STRING)
     private Role role;
