@@ -1,10 +1,9 @@
 Detail
 
-
-
-cai PostgreSQL
+PostgreSQL
 https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
 
+tao 1 database ten : GymSystem
 
-PostgreSQL lưu dữ liệu Khuôn mặt 
+- config name vs password
 

@@ -1,4 +1,4 @@
-package com.server.gymServerApplication.entity.mysql;
+package com.server.gymServerApplication.entity.postgresql;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.server.gymServerApplication.entity.baseObj.BaseObject;
@@ -27,10 +27,13 @@ import java.util.List;
 @AllArgsConstructor
 @SuperBuilder
 @EntityListeners(UserInformationListener.class) // Tinh BMI khi tạo infor
+@Table(indexes = {
+        @Index(name = "idx_user_information", columnList = "user_id")
+})
 public class UserInformation extends BaseObject {
 
-    @OneToOne
-    private User user;
+    @Column(name = "user_id", nullable = false, unique = true)
+    private String user;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;

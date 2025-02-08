@@ -23,6 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @SuperBuilder
 @Table(indexes = {@Index(name = "idx_email", columnList = "email"),
+        @Index(name = "idx_userInformation_id", columnList = "userInformation_id"),
         @Index(name = "idx_phone", columnList = "phone")})
 @EntityListeners(UserListener.class)
 public class User extends BaseObject {
@@ -52,8 +53,7 @@ public class User extends BaseObject {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToOne
-    private UserInformation userInformation;
+    private String userInformation_id;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Bill> bills;
