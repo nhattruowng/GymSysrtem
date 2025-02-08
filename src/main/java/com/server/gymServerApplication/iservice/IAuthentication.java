@@ -27,4 +27,8 @@ public interface IAuthentication {
     CompletableFuture<ResponseObject> changePassWork(ChangePassword password) throws AccountNotFoundException;
 
     CompletableFuture<ResponseObject> changeInfoAccess(ChangeInforAccount changeInforAccount) throws AccountNotFoundException;
+
+    CompletableFuture<ResponseObject> forgotPasswordAccess(String key) throws AccountNotFoundException, MessagingException;
+
+
 }

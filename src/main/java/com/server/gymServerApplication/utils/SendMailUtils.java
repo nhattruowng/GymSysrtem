@@ -3,7 +3,7 @@ package com.server.gymServerApplication.utils;
 import java.util.function.Function;
 
 public class SendMailUtils {
-    public static Function<String, String> Template(String code) {
+    public static Function<String, String> Template(String code, String message) {
         return (input) -> "<body style=\"font-family: 'Poppins', Arial, sans-serif\">\n" +
                 "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n" +
                 "    <tr>\n" +
@@ -12,7 +12,8 @@ public class SendMailUtils {
                 "\n" +
                 "                <tr>\n" +
                 "                    <td class=\"header\" style=\"background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;\">\n" +
-                "                        Verify GymSystem code\n" +
+                message +
+                "                       \n" +
                 "                    </td>\n" +
                 "                </tr>\n" +
                 "\n" +
@@ -50,4 +51,5 @@ public class SendMailUtils {
                 "</table>\n" +
                 "</body>";
     }
+
 }

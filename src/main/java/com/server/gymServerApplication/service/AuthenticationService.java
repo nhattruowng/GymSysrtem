@@ -60,6 +60,9 @@ public class AuthenticationService implements IAuthentication {
         this.user = new User();
     }
 
+    public void setAuthentication() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+    }
 
     @Override
     public boolean FaceRegistration() {
@@ -71,7 +74,7 @@ public class AuthenticationService implements IAuthentication {
         return null;
     }
 
-//    @Transactional("primaryTransactionManager")
+    //    @Transactional("primaryTransactionManager")
     @Async
     @Override
     public CompletableFuture<ResponseObject> Signup(RegisUser regisUser) throws MessagingException {
@@ -86,18 +89,19 @@ public class AuthenticationService implements IAuthentication {
 
         emailService.sendMailVerification("CHAO MUNG BAN DEN VOI HE THONG GYMSYSTEM",
                 regisUser.email(), verifiCode,
-                SendMailUtils.Template(verifiCode));
+                SendMailUtils.Template(verifiCode, "MA XAC THUC GYMSTEM"));
 
         user = User.builder()
                 .email(regisUser.email())
                 .password(passwordEncoder.encode(regisUser.password()))
+                .name(regisUser.email())
                 .build();
 
 
         return CompletableFuture.completedFuture(new ResponseObject("NHAP MA XAC NHAN ", HttpStatus.OK, null));
     }
 
-//    @Transactional("primaryTransactionManager")
+    //    @Transactional("primaryTransactionManager")
     @Override
     public CompletableFuture<ResponseObject> verify(String code) {
         ResponseObject resulResponseObject = null;
@@ -122,7 +126,6 @@ public class AuthenticationService implements IAuthentication {
             );
 
             AccountDetails userDetails = (AccountDetails) authentication.getPrincipal();
-//            LoginRepose loginRepose = ObjMap.INSTANCE.loginRepose(userDetails.getUser());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -183,6 +186,8 @@ public class AuthenticationService implements IAuthentication {
 
         iUserrepository.save(user);
 
+        setAuthentication();
+
         return CompletableFuture.completedFuture(ResponseObject.builder()
                 .data(true)
                 .message("THAY DOI MAT KHAU THANH CONG!")
@@ -212,11 +217,49 @@ public class AuthenticationService implements IAuthentication {
                 .filter(user1 -> !user1.isDelete())
                 .orElseThrow(() -> new AccountNotFoundException("TAI KHOAN DA BAN KHOATAI KHOAN DA BAN KHOA"));
 
+
         if (changeInforAccount.Email() != null || changeInforAccount.Phone() != null) {
-
+            user.setName(changeInforAccount.name() != null ? changeInforAccount.name() : user.getName());
+            user.setAvata(changeInforAccount.avatar() != null ? changeInforAccount.avatar() : user.getAvata());
+            user.setEmail(changeInforAccount.Email() != null ? changeInforAccount.Email() : user.getEmail());
+            user.setPhone(changeInforAccount.Phone() != null ? changeInforAccount.Phone() : user.getPhone());
         }
+        iUserrepository.save(user);
+        setAuthentication();
 
-        return null;
+        return CompletableFuture.completedFuture(ResponseObject.builder()
+                .message("CAP NHAT THONG TIN  THANH CONG!")
+                .data(true)
+                .httpStatus(HttpStatus.OK)
+                .build());
+    }
+
+    @Override
+    public CompletableFuture<ResponseObject> forgotPasswordAccess(String key)
+            throws AccountNotFoundException, MessagingException {
+
+        User tempUser = iUserrepository.findByPhoneOrEmail(key, key)
+                .filter(user1 -> !user1.isDelete())
+                .orElseThrow(() -> new AccountNotFoundException("TAI KHOAN KHONG TON TAI HOAC DA BI XOA!"));
+
+
+        String password = OtherFunctions.generateRandomNumberString();
+        tempUser.setPassword(passwordEncoder.encode(password));
+
+        iUserrepository.save(tempUser); // luu password vao
+
+        emailService.sendMailVerification("MAT KHAU GYMSYSTEM",
+                OtherFunctions.anonymousEmail(tempUser.getEmail()), password,
+                SendMailUtils.Template(password, "MAT KHAU HIEN TAI CUA BAN LA: "));
+
+
+        setAuthentication(); // xoa tai khoan khoi Security
+
+        return CompletableFuture.completedFuture(ResponseObject.builder()
+                .data(true)
+                .httpStatus(HttpStatus.OK)
+                .message("MAT KHAU DA GUI VE MAIL")
+                .build());
     }
 
 

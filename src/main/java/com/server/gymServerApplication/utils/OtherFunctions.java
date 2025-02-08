@@ -35,7 +35,7 @@ public class OtherFunctions {
         }
     }
 
-    public static byte[] convertMultipartFileToByteArray(MultipartFile file){
+    public static byte[] convertMultipartFileToByteArray(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("File is null or empty");
         }
@@ -104,7 +104,6 @@ public class OtherFunctions {
     }
 
 
-
     /**
      * chuyen danh sach thanh danh sach String id
      *
@@ -150,6 +149,7 @@ public class OtherFunctions {
 
     /**
      * ktr email
+     *
      * @param email
      * @return
      */
@@ -160,6 +160,7 @@ public class OtherFunctions {
 
     /**
      * ktr sdt
+     *
      * @param phoneNumber
      * @return
      */
@@ -167,6 +168,16 @@ public class OtherFunctions {
         // Regex kiểm tra số điện thoại (10-11 chữ số)
         String regex = "^[0-9]{10,11}$";
         return Pattern.matches(regex, phoneNumber);
+    }
+
+
+    public static String anonymousEmail(String email) {
+        int atIndex = email.lastIndexOf("@");
+
+        String username = email.substring(0, atIndex);
+
+        return username.charAt(0) + "*".repeat(username.length() - 2)
+                + username.charAt(username.length() - 1) + email.substring(atIndex);
     }
 
 }

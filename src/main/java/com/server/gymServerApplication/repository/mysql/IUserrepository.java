@@ -19,4 +19,5 @@ public interface IUserrepository extends JpaRepository<User, String> {
 
     boolean existsByEmailOrPhoneAndIsDeleteFalse(String key,String key2);
 
+
 }

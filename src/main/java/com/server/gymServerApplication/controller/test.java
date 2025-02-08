@@ -46,7 +46,7 @@ public class test {
     @Operation(summary = "Send Email Test")
     @Async
     public CompletableFuture<ResponseObject> sendEmailTest() throws MessagingException {
-        emailService.sendMailVerification("Test Email","ltn04098@gmail.com","test", SendMailUtils.Template("test"));
+        emailService.sendMailVerification("Test Email","ltn04098@gmail.com","test", SendMailUtils.Template("test",""));
         return CompletableFuture.completedFuture(ResponseObject.builder()
                 .httpStatus(HttpStatus.OK)
                 .message("Email sent successfully")
