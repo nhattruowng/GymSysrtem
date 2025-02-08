@@ -1,6 +1,5 @@
 package com.server.gymServerApplication.entity.postgresql;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.server.gymServerApplication.entity.baseObj.BaseObject;
 import com.server.gymServerApplication.entity.listener.UserInformationListener;
 import com.server.gymServerApplication.infor.BMI;
@@ -17,7 +16,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -38,10 +36,8 @@ public class UserInformation extends BaseObject {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    @Temporal(TemporalType.DATE)
-    private Date birthDate;
+    @Size(max = 100, min = 1, message = "Tuoi sai")
+    private int age;
 
     @Positive(message = "Cân nặng lớn hơn 0!")
     private float weight;
