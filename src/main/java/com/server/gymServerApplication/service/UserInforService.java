@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -23,17 +24,16 @@ public class UserInforService implements IUserInforService {
     private final IUserrepository iUserrepository;
     private final IUserInformation userInformation;
     private InformationUerPut informationUerPut;
-    private Authentication authentication;
 
 
     @Autowired
     public UserInforService(IUserrepository iUserrepository, IUserInformation userInformation) {
         this.iUserrepository = iUserrepository;
         this.userInformation = userInformation;
-        this.authentication = SecurityContextHolder.getContext().getAuthentication();
     }
 
 
+    @Transactional
     @Override
     public CompletableFuture<ResponseObject> putInformation(InformationUerPut informationUerPut) {
 
@@ -45,6 +45,8 @@ public class UserInforService implements IUserInforService {
                 .gender(informationUerPut.gender().equals("MALE") ? Gender.MALE : Gender.FEMALE)
                 .threeRoundMeasurement(informationUerPut.threeRoundMeasurement())
                 .build();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.isAuthenticated()) {
             AccountDetails userDetails = (AccountDetails) authentication.getPrincipal();
@@ -65,6 +67,9 @@ public class UserInforService implements IUserInforService {
                 .data(userInformation1.getBmi() + " " + userInformation1.getWhr() + " " + userInformation1.getWHtR())
                 .build());
     }
+
+
+
 
 
 }
