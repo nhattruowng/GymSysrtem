@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IFaceID extends JpaRepository<FaceID, String> {
+    boolean existsByUser(String user);
+
 }

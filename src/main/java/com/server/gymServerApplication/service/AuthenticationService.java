@@ -5,13 +5,14 @@ import com.server.gymServerApplication.entity.mysql.User;
 import com.server.gymServerApplication.iservice.IAuthentication;
 import com.server.gymServerApplication.iservice.IEmailService;
 import com.server.gymServerApplication.modelView.ResponseObject;
-import com.server.gymServerApplication.modelView.repon.ChangeInforAccount;
+import com.server.gymServerApplication.modelView.reques.ChangeInforAccount;
 import com.server.gymServerApplication.modelView.repon.ChangePassword;
 import com.server.gymServerApplication.modelView.repon.LoginRepose;
 import com.server.gymServerApplication.modelView.repon.UserRepo;
 import com.server.gymServerApplication.modelView.reques.LoginReques;
 import com.server.gymServerApplication.modelView.reques.RegisUser;
 import com.server.gymServerApplication.repository.mysql.IUserrepository;
+import com.server.gymServerApplication.repository.postgresql.IFaceID;
 import com.server.gymServerApplication.utils.OtherFunctions;
 import com.server.gymServerApplication.utils.SendMailUtils;
 import jakarta.mail.MessagingException;
@@ -39,10 +40,9 @@ public class AuthenticationService implements IAuthentication {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
+    private final IFaceID faceidRepository;
     private Authentication authentication;
     private User user;
-
-
     private String verifiCode;
 
     @Autowired
@@ -50,12 +50,13 @@ public class AuthenticationService implements IAuthentication {
                                  IEmailService emailService,
                                  PasswordEncoder passwordEncoder,
                                  AuthenticationManager authenticationManager,
-                                 TokenService tokenService) {
+                                 TokenService tokenService, IFaceID faceidRepository) {
         this.iUserrepository = iUserrepository;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
+        this.faceidRepository = faceidRepository;
         this.authentication = SecurityContextHolder.getContext().getAuthentication();
         this.user = new User();
     }
@@ -65,7 +66,19 @@ public class AuthenticationService implements IAuthentication {
     }
 
     @Override
-    public boolean FaceRegistration() {
+    public boolean FaceRegistration() throws AccountNotFoundException {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AccountNotFoundException("BAN CHUA DANG NHAP!");
+        }
+
+        AccountDetails userDetails = (AccountDetails) authentication.getPrincipal();
+
+        if (!userDetails.isAccountNonLocked()) {
+            throw new AccountNotFoundException("TAI KHOAN DA BAN KHOA!");
+        }
+
+
+
         return false;
     }
 
@@ -195,44 +208,6 @@ public class AuthenticationService implements IAuthentication {
                 .build());
     }
 
-    @Async
-    @Transactional
-    @Override
-    public CompletableFuture<ResponseObject> changeInfoAccess(ChangeInforAccount changeInforAccount) throws AccountNotFoundException {
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new AccountNotFoundException("CHUA DANG NHAP!");
-        }
-
-        AccountDetails userDetails = (AccountDetails) authentication.getPrincipal();
-
-        if (!userDetails.isAccountNonLocked()) {
-            throw new AccountNotFoundException("TAI KHOAN DA BAN KHOA!");
-        }
-
-        String email = userDetails.getUser().getEmail();
-        String phone = userDetails.getUser().getPhone();
-
-        User user = iUserrepository.findByPhoneOrEmail(email, phone)
-                .filter(user1 -> !user1.isDelete())
-                .orElseThrow(() -> new AccountNotFoundException("TAI KHOAN DA BAN KHOATAI KHOAN DA BAN KHOA"));
-
-
-        if (changeInforAccount.Email() != null || changeInforAccount.Phone() != null) {
-            user.setName(changeInforAccount.name() != null ? changeInforAccount.name() : user.getName());
-            user.setAvata(changeInforAccount.avatar() != null ? changeInforAccount.avatar() : user.getAvata());
-            user.setEmail(changeInforAccount.Email() != null ? changeInforAccount.Email() : user.getEmail());
-            user.setPhone(changeInforAccount.Phone() != null ? changeInforAccount.Phone() : user.getPhone());
-        }
-        iUserrepository.save(user);
-        setAuthentication();
-
-        return CompletableFuture.completedFuture(ResponseObject.builder()
-                .message("CAP NHAT THONG TIN  THANH CONG!")
-                .data(true)
-                .httpStatus(HttpStatus.OK)
-                .build());
-    }
 
     @Override
     public CompletableFuture<ResponseObject> forgotPasswordAccess(String key)
@@ -261,6 +236,7 @@ public class AuthenticationService implements IAuthentication {
                 .message("MAT KHAU DA GUI VE MAIL")
                 .build());
     }
+
 
 
 

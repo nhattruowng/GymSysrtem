@@ -1,7 +1,6 @@
 package com.server.gymServerApplication.iservice;
 
 import com.server.gymServerApplication.modelView.ResponseObject;
-import com.server.gymServerApplication.modelView.repon.ChangeInforAccount;
 import com.server.gymServerApplication.modelView.repon.ChangePassword;
 import com.server.gymServerApplication.modelView.repon.UserRepo;
 import com.server.gymServerApplication.modelView.reques.LoginReques;
@@ -13,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface IAuthentication {
 
-    boolean FaceRegistration();
+    boolean FaceRegistration() throws AccountNotFoundException;
 
     UserRepo FaceLogin();
 
@@ -25,8 +24,6 @@ public interface IAuthentication {
     CompletableFuture<ResponseObject> login(LoginReques loginReques);
 
     CompletableFuture<ResponseObject> changePassWork(ChangePassword password) throws AccountNotFoundException;
-
-    CompletableFuture<ResponseObject> changeInfoAccess(ChangeInforAccount changeInforAccount) throws AccountNotFoundException;
 
     CompletableFuture<ResponseObject> forgotPasswordAccess(String key) throws AccountNotFoundException, MessagingException;
 

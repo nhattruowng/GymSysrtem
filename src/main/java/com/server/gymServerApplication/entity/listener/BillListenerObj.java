@@ -4,6 +4,7 @@ import com.server.gymServerApplication.entity.mysql.Bill;
 import com.server.gymServerApplication.infor.MEMBERSHIP_TYPE;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -12,7 +13,7 @@ public class BillListenerObj {
 
     @PrePersist
     @PreUpdate
-    private void init(Bill bill) {
+    private void init(@NotNull Bill bill) {
         double total = bill.getService().getPrice() * bill.getQuantity();
         bill.setTotal_amount(total);
 

@@ -1,4 +1,4 @@
-package com.server.gymServerApplication.modelView.repon;
+package com.server.gymServerApplication.modelView.reques;
 
 
 public record ChangeInforAccount( String Email,
