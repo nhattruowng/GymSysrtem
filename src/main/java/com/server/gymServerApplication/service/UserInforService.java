@@ -7,7 +7,7 @@ import com.server.gymServerApplication.iservice.IUserInforService;
 import com.server.gymServerApplication.modelView.ResponseObject;
 import com.server.gymServerApplication.modelView.reques.InformationUerPut;
 import com.server.gymServerApplication.repository.mysql.IUserrepository;
-import com.server.gymServerApplication.repository.postgresql.IUserInformation;
+import com.server.gymServerApplication.repository.postgresql.IUserInformationRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -22,12 +22,12 @@ public class UserInforService implements IUserInforService {
 
 
     private final IUserrepository iUserrepository;
-    private final IUserInformation userInformation;
+    private final IUserInformationRepo userInformation;
     private InformationUerPut informationUerPut;
 
 
     @Autowired
-    public UserInforService(IUserrepository iUserrepository, IUserInformation userInformation) {
+    public UserInforService(IUserrepository iUserrepository, IUserInformationRepo userInformation) {
         this.iUserrepository = iUserrepository;
         this.userInformation = userInformation;
     }

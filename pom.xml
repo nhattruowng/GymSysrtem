@@ -67,11 +67,17 @@
 
         <!-- https://mvnrepository.com/artifact/org.openpnp/opencv -->
         <dependency>
-            <groupId>org.openpnp</groupId>
+            <groupId>org.bytedeco</groupId>
             <artifactId>opencv</artifactId>
-            <version>3.2.0-1</version>
+            <version>4.9.0-1.5.10</version>
         </dependency>
 
+        <!-- JavaCPP (yêu cầu để chạy OpenCV) -->
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacpp</artifactId>
+            <version>1.5.10</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.json/json -->
         <dependency>
@@ -139,8 +145,13 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>com.AIUItrande</groupId>
+            <artifactId>Gym_ServerApplication</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.ehcache/ehcache &ndash;&gt;-->
+        <!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.ehcache/ehcache &ndash;&gt;-->
 <!--        <dependency>-->
 <!--            <groupId>org.ehcache</groupId>-->
 <!--            <artifactId>ehcache</artifactId>-->

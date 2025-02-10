@@ -5,14 +5,13 @@ import com.server.gymServerApplication.entity.mysql.User;
 import com.server.gymServerApplication.iservice.IAuthentication;
 import com.server.gymServerApplication.iservice.IEmailService;
 import com.server.gymServerApplication.modelView.ResponseObject;
-import com.server.gymServerApplication.modelView.reques.ChangeInforAccount;
 import com.server.gymServerApplication.modelView.repon.ChangePassword;
 import com.server.gymServerApplication.modelView.repon.LoginRepose;
 import com.server.gymServerApplication.modelView.repon.UserRepo;
 import com.server.gymServerApplication.modelView.reques.LoginReques;
 import com.server.gymServerApplication.modelView.reques.RegisUser;
 import com.server.gymServerApplication.repository.mysql.IUserrepository;
-import com.server.gymServerApplication.repository.postgresql.IFaceID;
+import com.server.gymServerApplication.repository.postgresql.IFaceIdRepository;
 import com.server.gymServerApplication.utils.OtherFunctions;
 import com.server.gymServerApplication.utils.SendMailUtils;
 import jakarta.mail.MessagingException;
@@ -26,7 +25,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.util.concurrent.CompletableFuture;
@@ -40,7 +38,7 @@ public class AuthenticationService implements IAuthentication {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
-    private final IFaceID faceidRepository;
+    private final IFaceIdRepository faceidRepository;
     private Authentication authentication;
     private User user;
     private String verifiCode;
@@ -50,7 +48,7 @@ public class AuthenticationService implements IAuthentication {
                                  IEmailService emailService,
                                  PasswordEncoder passwordEncoder,
                                  AuthenticationManager authenticationManager,
-                                 TokenService tokenService, IFaceID faceidRepository) {
+                                 TokenService tokenService, IFaceIdRepository faceidRepository) {
         this.iUserrepository = iUserrepository;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;

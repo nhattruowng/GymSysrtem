@@ -1,6 +1,9 @@
 package com.server.gymServerApplication.utils;
 
 
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -13,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -178,6 +182,17 @@ public class OtherFunctions {
 
         return username.charAt(0) + "*".repeat(username.length() - 2)
                 + username.charAt(username.length() - 1) + email.substring(atIndex);
+    }
+
+
+    /**
+     * Chuyển chuõi base 64 thanh ma MAt
+     * @param {@link {@link Base64}} base64Image
+     * @return {@link Mat}
+     */
+    public static Mat convertBase64ToMat(String base64Image) {
+        byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+        return Imgcodecs.imdecode(new MatOfByte(imageBytes), Imgcodecs.IMREAD_GRAYSCALE);
     }
 
 }
