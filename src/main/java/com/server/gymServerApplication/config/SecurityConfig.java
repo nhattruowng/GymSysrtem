@@ -10,6 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -137,4 +138,16 @@ public class SecurityConfig {
         return authenticationProvider;
     }
 
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        return http
+//                .cors(Customizer.withDefaults())
+//                .authorizeHttpRequests(registry -> {
+//                    registry.requestMatchers("/").permitAll();
+//                    registry.anyRequest().authenticated();
+//                })
+//                .oauth2Login(Customizer.withDefaults())
+//                .formLogin(Customizer.withDefaults())
+//                .build();
+//    }
 }

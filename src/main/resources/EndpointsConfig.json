@@ -8,7 +8,9 @@
     "/api/v1/test/send-email-test",
     "/api/v1/application-authent/signup-new-account",
     "/api/v1/application-authent/signup-new-account/verified/**",
-    "/api/v1/application-authent/login-account"
+    "/api/v1/application-authent/login-account",
+    "api/v1/oauth/home",
+    "api/v1/oauth/login"
   ],
   "PUBLIC_ENDPOINTS_METHOD": [
     "/swagger-ui/**",

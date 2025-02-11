@@ -139,8 +139,12 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
 
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.ehcache/ehcache &ndash;&gt;-->
+        <!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.ehcache/ehcache &ndash;&gt;-->
 <!--        <dependency>-->
 <!--            <groupId>org.ehcache</groupId>-->
 <!--            <artifactId>ehcache</artifactId>-->
