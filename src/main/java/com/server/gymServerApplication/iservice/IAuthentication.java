@@ -18,6 +18,8 @@ public interface IAuthentication {
     UserRepo FaceLogin();
 
     CompletableFuture<ResponseObject> Signup(RegisUser user) throws MessagingException;
+    CompletableFuture<ResponseObject> SignupWitGoogle(String email, String password) throws MessagingException;
+
 
     CompletableFuture<ResponseObject> verify(String code);
 

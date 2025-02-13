@@ -141,13 +141,16 @@ public class SecurityConfig {
 //    @Bean
 //    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 //        return http
-//                .cors(Customizer.withDefaults())
 //                .authorizeHttpRequests(registry -> {
-//                    registry.requestMatchers("/").permitAll();
+//                    registry.requestMatchers("/", "/login").permitAll();
 //                    registry.anyRequest().authenticated();
 //                })
-//                .oauth2Login(Customizer.withDefaults())
-//                .formLogin(Customizer.withDefaults())
+//                .oauth2Login(oauth2login -> {
+//                    oauth2login
+//                            .loginPage("/login")
+//                            .successHandler((request, response, authentication) ->
+//                                    response.sendRedirect("api/v1/application-google/signup-with-google-new-account"));
+//                })
 //                .build();
 //    }
 }

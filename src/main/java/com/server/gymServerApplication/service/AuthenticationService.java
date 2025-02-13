@@ -15,6 +15,7 @@ import com.server.gymServerApplication.repository.mysql.IUserrepository;
 import com.server.gymServerApplication.utils.OtherFunctions;
 import com.server.gymServerApplication.utils.SendMailUtils;
 import jakarta.mail.MessagingException;
+import jakarta.validation.constraints.NotNull;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -96,6 +97,64 @@ public class AuthenticationService implements IAuthentication {
 
         return CompletableFuture.completedFuture(new ResponseObject("NHAP MA XAC NHAN ", HttpStatus.OK, null));
     }
+    @Async
+    //@Override
+    public CompletableFuture<ResponseObject> SignupWitGoogle(String email, String password) throws MessagingException {
+        if (iUserrepository.existsUserByEmail(email)) {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, password)
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            AccountDetails userDetails = (AccountDetails) authentication.getPrincipal();
+
+            LoginRepose loginRepose = new LoginRepose(userDetails.getUser().getName(),
+                    userDetails.getUser().getEmail(),
+                    userDetails.getUser().getPhone(),
+                    userDetails.getUser().getAvata(),
+                    tokenService.generateToken(userDetails.getUser())
+            );
+
+            return CompletableFuture.completedFuture(new ResponseObject(
+                    "Đăng nhập thành công",
+                    HttpStatus.OK,
+                    loginRepose
+            ));
+        }
+
+        // Nếu email chưa tồn tại, tạo một tài khoản mới
+        user = User.builder()
+                .email(email)
+                .password(passwordEncoder.encode(password))
+                .build();
+
+        // Lưu thông tin người dùng mới vào cơ sở dữ liệu
+        iUserrepository.save(user);
+
+        // Tự động đăng nhập sau khi tạo tài khoản
+         authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, password)
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        AccountDetails userDetails = (AccountDetails) authentication.getPrincipal();
+
+        LoginRepose loginRepose = new LoginRepose(userDetails.getUser().getName(),
+                userDetails.getUser().getEmail(),
+                userDetails.getUser().getPhone(),
+                userDetails.getUser().getAvata(),
+                tokenService.generateToken(userDetails.getUser())
+        );
+
+        return CompletableFuture.completedFuture(new ResponseObject(
+                "Tài khoản đã được tạo và đăng nhập thành công",
+                HttpStatus.CREATED,
+                loginRepose
+        ));
+    }
+
 
 //    @Transactional("primaryTransactionManager")
     @Override

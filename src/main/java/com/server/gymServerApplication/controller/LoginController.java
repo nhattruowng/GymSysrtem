@@ -1,15 +1,26 @@
 package com.server.gymServerApplication.controller;
 
+import com.server.gymServerApplication.iservice.IAuthentication;
+import com.server.gymServerApplication.modelView.ResponseObject;
+import com.server.gymServerApplication.modelView.reques.RegisUser;
+import jakarta.mail.MessagingException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("api/v1/application-google/")
 public class LoginController {
+    private final IAuthentication authentication;
+
+    @Autowired
+    public LoginController(IAuthentication authentication) {
+        this.authentication = authentication;
+    }
 
     @GetMapping("/")
     public String index() {
@@ -20,9 +31,26 @@ public class LoginController {
     public Map<String, Object> home(OAuth2AuthenticationToken authenticationToken) {
         return authenticationToken.getPrincipal().getAttributes();
     }
-    @GetMapping("/testlogin")
-    public Map<String, Object> CurrentUser(OAuth2AuthenticationToken authenticationToken) {
-        System.out.println(authenticationToken.getPrincipal().getAttributes());
-        return authenticationToken.getPrincipal().getAttributes();
+
+    @GetMapping("/login")
+    public String login() {
+        return "custom_login";
     }
+    @GetMapping("/profile")
+    public String profile(OAuth2AuthenticationToken token, Model model) {
+        model.addAttribute("name", token.getPrincipal().getAttribute("name"));
+        model.addAttribute("email", token.getPrincipal().getAttribute("email"));
+        model.addAttribute("photo", token.getPrincipal().getAttribute("picture"));
+        return "home";
+    }
+
+//    @GetMapping("signup-with-google-new-account")
+//    public CompletableFuture<ResponseObject> signupWithGoogle(OAuth2AuthenticationToken authenticationToken) throws MessagingException {
+//        // Lấy thông tin từ Google Authentication Token
+//        Map<String, Object> attributes = authenticationToken.getPrincipal().getAttributes();
+//        String email = (String) attributes.get("email");
+//        String name = (String) attributes.get("name");
+//        // Gọi phương thức từ service
+//        return authentication.SignupWitGoogle(email, name) ;
+//    }
 }
