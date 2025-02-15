@@ -10,7 +10,11 @@
     "/api/v1/application-authent/signup-new-account/verified/**",
     "/api/v1/application-authent/login-account",
     "api/v1/application-google/home",
-    "api/v1/application-google/login"
+    "api/v1/application-google/login",
+    "http://localhost:8080/api/v1/application-google/home",
+    "http://localhost:8080/api/v1/application-google/profile",
+    "http://localhost:8080/api/v1/application-google/login",
+    "http://localhost:8080/api/v1/application-google"
   ],
   "PUBLIC_ENDPOINTS_METHOD": [
     "/swagger-ui/**",

@@ -87,6 +87,12 @@ public class SecurityConfig {
                         .authenticationEntryPoint(globalExceptionHandler).accessDeniedHandler((request, response, accessDeniedException) -> {
                             globalExceptionHandler.handleAccessDeniedException(request, response);
                         }))
+                .oauth2Login(oauth2login -> {
+                    oauth2login
+                            .loginPage("http://localhost:8080/api/v1/application-google/login")
+                            .successHandler((request, response, authentication) ->
+                                    response.sendRedirect("http://localhost:8080/api/v1/application-google/signup-with-google-new-account"));
+                })
                 .userDetailsService(userService)
 
                 .csrf(AbstractHttpConfigurer::disable);
@@ -138,19 +144,4 @@ public class SecurityConfig {
         return authenticationProvider;
     }
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        return http
-//                .authorizeHttpRequests(registry -> {
-//                    registry.requestMatchers("/", "/login").permitAll();
-//                    registry.anyRequest().authenticated();
-//                })
-//                .oauth2Login(oauth2login -> {
-//                    oauth2login
-//                            .loginPage("/login")
-//                            .successHandler((request, response, authentication) ->
-//                                    response.sendRedirect("api/v1/application-google/signup-with-google-new-account"));
-//                })
-//                .build();
-//    }
 }

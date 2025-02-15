@@ -99,64 +99,66 @@ public class AuthenticationService implements IAuthentication {
     }
     @Async
     //@Override
-    public CompletableFuture<ResponseObject> SignupWitGoogle(String email, String password) throws MessagingException {
-        if (iUserrepository.existsUserByEmail(email)) {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(email, password)
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            AccountDetails userDetails = (AccountDetails) authentication.getPrincipal();
-
-            LoginRepose loginRepose = new LoginRepose(userDetails.getUser().getName(),
-                    userDetails.getUser().getEmail(),
-                    userDetails.getUser().getPhone(),
-                    userDetails.getUser().getAvata(),
-                    tokenService.generateToken(userDetails.getUser())
-            );
-
-            return CompletableFuture.completedFuture(new ResponseObject(
-                    "Đăng nhập thành công",
-                    HttpStatus.OK,
-                    loginRepose
-            ));
+    public CompletableFuture<ResponseObject> SignupWitGoogle(String email, String name, String picture) throws MessagingException {
+        if (email == null || email.isEmpty() || name == null || name.isEmpty() || picture == null || picture.isEmpty()) {
+            throw new IllegalArgumentException("Email, Name, and Picture are required");
         }
 
-        // Nếu email chưa tồn tại, tạo một tài khoản mới
-        user = User.builder()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .build();
+        String password = OtherFunctions.generateRandomNumberString();
 
-        // Lưu thông tin người dùng mới vào cơ sở dữ liệu
-        iUserrepository.save(user);
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                if (iUserrepository.existsUserByEmail(email)) {
 
-        // Tự động đăng nhập sau khi tạo tài khoản
-         authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password)
-        );
+                    String password_temp = iUserrepository.findPasswordByEmail(email)
+                            .orElseThrow(() -> new RuntimeException("Password not found for email: " + email));
+                    authentication = authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(email, password_temp)
+                    );
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    System.out.println("33333333232333333");
+                    AccountDetails userDetails = (AccountDetails) authentication.getPrincipal();
+                    LoginRepose loginRepose = new LoginRepose(
+                            userDetails.getUser().getName(),
+                            userDetails.getUser().getEmail(),
+                            userDetails.getUser().getPhone(),
+                            userDetails.getUser().getAvata(),
+                            tokenService.generateToken(userDetails.getUser())
+                    );
+                    System.out.println("111"+loginRepose);
+                    return new ResponseObject("Đăng nhập thành công", HttpStatus.OK, loginRepose);
+                }
+                byte[] avatarBytes = OtherFunctions.converUrltoByteArray(picture);
+                User user = User.builder()
+                        .email(email)
+                        .password(passwordEncoder.encode(password))
+                        .avata(avatarBytes)
+                        .build();
+                iUserrepository.save(user);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+                Authentication authentication = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(email, password)
+                );
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        AccountDetails userDetails = (AccountDetails) authentication.getPrincipal();
-
-        LoginRepose loginRepose = new LoginRepose(userDetails.getUser().getName(),
-                userDetails.getUser().getEmail(),
-                userDetails.getUser().getPhone(),
-                userDetails.getUser().getAvata(),
-                tokenService.generateToken(userDetails.getUser())
-        );
-
-        return CompletableFuture.completedFuture(new ResponseObject(
-                "Tài khoản đã được tạo và đăng nhập thành công",
-                HttpStatus.CREATED,
-                loginRepose
-        ));
+                AccountDetails userDetails = (AccountDetails) authentication.getPrincipal();
+                LoginRepose loginRepose = new LoginRepose(
+                        userDetails.getUser().getName(),
+                        userDetails.getUser().getEmail(),
+                        userDetails.getUser().getPhone(),
+                        userDetails.getUser().getAvata(),
+                        tokenService.generateToken(userDetails.getUser())
+                );
+                return new ResponseObject("Đăng ký và đăng nhập thành công", HttpStatus.CREATED, loginRepose);
+            } catch (Exception e) {
+                throw new RuntimeException("Error during signup or login", e);
+            }
+        }).exceptionally(ex -> new ResponseObject("Error: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null));
     }
 
 
-//    @Transactional("primaryTransactionManager")
+
+    //    @Transactional("primaryTransactionManager")
     @Override
     public CompletableFuture<ResponseObject> verify(String code) {
         ResponseObject resulResponseObject = null;

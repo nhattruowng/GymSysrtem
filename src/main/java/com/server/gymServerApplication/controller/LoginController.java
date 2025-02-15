@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -36,21 +37,23 @@ public class LoginController {
     public String login() {
         return "custom_login";
     }
+
     @GetMapping("/profile")
     public String profile(OAuth2AuthenticationToken token, Model model) {
         model.addAttribute("name", token.getPrincipal().getAttribute("name"));
         model.addAttribute("email", token.getPrincipal().getAttribute("email"));
         model.addAttribute("photo", token.getPrincipal().getAttribute("picture"));
+        System.out.println(token.getPrincipal().getAttributes());
         return "home";
     }
 
-//    @GetMapping("signup-with-google-new-account")
-//    public CompletableFuture<ResponseObject> signupWithGoogle(OAuth2AuthenticationToken authenticationToken) throws MessagingException {
-//        // Lấy thông tin từ Google Authentication Token
-//        Map<String, Object> attributes = authenticationToken.getPrincipal().getAttributes();
-//        String email = (String) attributes.get("email");
-//        String name = (String) attributes.get("name");
-//        // Gọi phương thức từ service
-//        return authentication.SignupWitGoogle(email, name) ;
-//    }
+    @GetMapping("/signup-with-google-new-account")
+    public CompletableFuture<ResponseObject> signupWithGoogle(OAuth2AuthenticationToken authenticationToken) throws MessagingException {
+        Map<String, Object> attributes = authenticationToken.getPrincipal().getAttributes();
+        String email = (String) attributes.get("email");
+        String name = (String) attributes.get("name");
+        String picture = (String) attributes.get("picture");
+        System.out.println(email + "_________" + name + "_________" + picture);
+        return authentication.SignupWitGoogle(email, name, picture) ;
+    }
 }
